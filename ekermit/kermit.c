@@ -50,12 +50,10 @@
  */
 #include "debug.h"  /* Debugging */
 #include "kermit.h" /* Kermit protocol definitions */
-
 #define zgetc() \
 ((--(k->zincnt))>=0)?((int)(*(k->zinptr)++)&0xff):(*(k->readf))(k)
 
 /* See cdefs.h for meaning of static, unsigned long, and unsigned char */
-
 static unsigned long stringnum(unsigned char *, struct k_data *);
 static unsigned char * numstring(unsigned long, unsigned char *, int, struct k_data *);
 int static spkt(char, short, int, unsigned char *, struct k_data *);
