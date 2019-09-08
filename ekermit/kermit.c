@@ -48,8 +48,8 @@
  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  */
-#include "debug.h"            /* Debugging */
-#include "kermit.h"            /* Kermit protocol definitions */
+#include "debug.h"  /* Debugging */
+#include "kermit.h" /* Kermit protocol definitions */
 
 #define zgetc() \
 ((--(k->zincnt))>=0)?((int)(*(k->zinptr)++)&0xff):(*(k->readf))(k)
@@ -87,24 +87,26 @@ int static resend(struct k_data *);
 int xerror(void);
 #endif /* DEBUG */
 
-int /* The kermit() function */
-kermit(short f, /* Function code */
-struct k_data *k, /* The control struct */
-short r_slot, /* Received packet slot number */
-int len, /* Length of packet in slot */
-char *msg, /* Message for error packet */
-struct k_response *r) { /* Response struct */
-    int i, rc; /* Workers */
-    int datalen; /* Length of packet data field */
-    unsigned char *p; /* Pointer to packet data field */
-    unsigned char *q; /* Pointer to data to be checked */
-    unsigned char *s; /* Worker string pointer */
-    unsigned char c, t; /* Worker chars */
-    unsigned char pbc[4]; /* Copy of packet block check */
-    short seq, prev; /* Copies of sequence numbers */
-    short chklen; /* Length of packet block check */
+/* The kermit() function */
+int kermit(
+        short f,             /* Function code */
+        struct k_data *k,    /* The control struct */
+        short r_slot,        /* Received packet slot number */
+        int len,             /* Length of packet in slot */
+        char *msg,           /* Message for error packet */
+        struct k_response *r /* Response struct */
+        ) {
+           int i, rc;      /* Workers */
+           int datalen;    /* Length of packet data field */
+unsigned char* p;         /* Pointer to packet data field */
+unsigned char* q;         /* Pointer to data to be checked */
+unsigned char* s;         /* Worker string pointer */
+ unsigned char c, t;      /* Worker chars */
+ unsigned char pbc[4];    /* Copy of packet block check */
+         short seq, prev; /* Copies of sequence numbers */
+         short chklen;    /* Length of packet block check */
 #ifdef F_CRC
-    unsigned int crc; /* 16-bit CRC */
+  unsigned int crc;       /* 16-bit CRC */
 #endif /* F_CRC */
     int ok;
 
@@ -115,11 +117,11 @@ struct k_response *r) { /* Response struct */
 
     if (f == K_INIT) { /* Initialize packet buffers etc */
 
-        k->version = (unsigned char *) VERSION; /* Version of this module */
-        r->filename[0] = '\0'; /* No filename yet. */
-        r->filedate[0] = '\0'; /* No filedate yet. */
-        r->filesize = 0L; /* No filesize yet. */
-        r->sofar = 0L; /* No bytes transferred yet */
+        k->version     = (unsigned char *) VERSION; /* Version of this module */
+        r->filename[0] = '\0';                      /* No filename yet. */
+        r->filedate[0] = '\0';                      /* No filedate yet. */
+        r->filesize    = 0L;                        /* No filesize yet. */
+        r->sofar       = 0L;                        /* No bytes transferred yet */
 
         for (i = 0; i < P_WSLOTS; i++) { /* Packet info for each window slot */
             freerslot(k, i);
@@ -133,38 +135,36 @@ struct k_response *r) { /* Response struct */
 #endif /* F_TSW */
 
         /* Initialize the k_data structure */
-
         for (i = 0; i < 6; i++)
             k->s_remain[i] = '\0';
 
-        k->state = R_WAIT; /* Beginning protocol state */
-        r->status = R_WAIT;
-        k->what = W_RECV; /* Default action */
-        k->s_first = 1; /* Beginning of file */
-        k->r_soh = k->s_soh = SOH; /* Packet start */
-        k->r_eom = k->s_eom = CR; /* Packet end */
-        k->s_seq = k->r_seq = 0; /* Packet sequence number */
-        k->s_type = k->r_type = 0; /* Packet type */
-        k->r_timo = P_R_TIMO; /* Timeout interval for me to use */
-        k->s_timo = P_S_TIMO; /* Timeout for other Kermit to use */
-        k->r_maxlen = P_PKTLEN; /* Maximum packet length */
-        k->s_maxlen = P_PKTLEN; /* Maximum packet length */
-        k->window = P_WSLOTS; /* Maximum window slots */
-        k->wslots = 1; /* Current window slots */
-        k->zincnt = 0;
-        k->dummy = 0;
+        k->state    = R_WAIT;         /* Beginning protocol state */
+        r->status   = R_WAIT;
+        k->what     = W_RECV;         /* Default action */
+        k->s_first  = 1;              /* Beginning of file */
+        k->r_soh    = k->s_soh = SOH; /* Packet start */
+        k->r_eom    = k->s_eom = CR;  /* Packet end */
+        k->s_seq    = k->r_seq = 0;   /* Packet sequence number */
+        k->s_type   = k->r_type = 0;  /* Packet type */
+        k->r_timo   = P_R_TIMO;       /* Timeout interval for me to use */
+        k->s_timo   = P_S_TIMO;       /* Timeout for other Kermit to use */
+        k->r_maxlen = P_PKTLEN;       /* Maximum packet length */
+        k->s_maxlen = P_PKTLEN;       /* Maximum packet length */
+        k->window   = P_WSLOTS;       /* Maximum window slots */
+        k->wslots   = 1;              /* Current window slots */
+        k->zincnt   = 0;
+        k->dummy    = 0;
         k->filename = (unsigned char *) 0;
 
         /* Parity must be filled in by the caller */
-
-        k->retry = P_RETRY; /* Retransmission limit */
+        k->retry  = P_RETRY;         /* Retransmission limit */
         k->s_ctlq = k->r_ctlq = '#'; /* Control prefix */
-        k->ebq = 'Y'; /* 8th-bit prefix negotiation */
-        k->ebqflg = 0; /* 8th-bit prefixing flag */
-        k->rptq = '~'; /* Send repeat prefix */
-        k->rptflg = 0; /* Repeat counts negotiated */
-        k->s_rpt = 0; /* Current repeat count */
-        k->capas = 0 /* Capabilities */
+        k->ebq    = 'Y';             /* 8th-bit prefix negotiation */
+        k->ebqflg = 0;               /* 8th-bit prefixing flag */
+        k->rptq   = '~';             /* Send repeat prefix */
+        k->rptflg = 0;               /* Repeat counts negotiated */
+        k->s_rpt  = 0;               /* Current repeat count */
+        k->capas  = 0                /* Capabilities */
 #ifdef F_LP
                 | CAP_LP /* Long packets */
 #endif /* F_LP */
@@ -180,34 +180,34 @@ struct k_response *r) { /* Response struct */
         k->opktlen = 0;
 
 #ifdef F_CRC
-        /* This is the only way to initialize these tables -- no static data. */
 
-        k->crcta[0] = 0; /* CRC generation table A */
-        k->crcta[1] = 010201;
-        k->crcta[2] = 020402;
-        k->crcta[3] = 030603;
-        k->crcta[4] = 041004;
-        k->crcta[5] = 051205;
-        k->crcta[6] = 061406;
-        k->crcta[7] = 071607;
-        k->crcta[8] = 0102010;
-        k->crcta[9] = 0112211;
+        /* This is the only way to initialize these tables -- no static data. */
+        k->crcta[0]  = 0;      /* CRC generation table A */
+        k->crcta[1]  = 010201;
+        k->crcta[2]  = 020402;
+        k->crcta[3]  = 030603;
+        k->crcta[4]  = 041004;
+        k->crcta[5]  = 051205;
+        k->crcta[6]  = 061406;
+        k->crcta[7]  = 071607;
+        k->crcta[8]  = 0102010;
+        k->crcta[9]  = 0112211;
         k->crcta[10] = 0122412;
         k->crcta[11] = 0132613;
         k->crcta[12] = 0143014, k->crcta[13] = 0153215;
         k->crcta[14] = 0163416;
         k->crcta[15] = 0173617;
 
-        k->crctb[0] = 0; /* CRC table B */
-        k->crctb[1] = 010611;
-        k->crctb[2] = 021422;
-        k->crctb[3] = 031233;
-        k->crctb[4] = 043044;
-        k->crctb[5] = 053655;
-        k->crctb[6] = 062466;
-        k->crctb[7] = 072277;
-        k->crctb[8] = 0106110;
-        k->crctb[9] = 0116701;
+        k->crctb[0]  = 0;       /* CRC table B */
+        k->crctb[1]  = 010611;
+        k->crctb[2]  = 021422;
+        k->crctb[3]  = 031233;
+        k->crctb[4]  = 043044;
+        k->crctb[5]  = 053655;
+        k->crctb[6]  = 062466;
+        k->crctb[7]  = 072277;
+        k->crctb[8]  = 0106110;
+        k->crctb[9]  = 0116701;
         k->crctb[10] = 0127532;
         k->crctb[11] = 0137323;
         k->crctb[12] = 0145154;
@@ -246,7 +246,6 @@ struct k_response *r) { /* Response struct */
         return (X_OK);
 
     /* If we're in the protocol, check to make sure we got a new packet */
-
     debug(DB_LOG, "r_slot", 0, r_slot);
     debug(DB_LOG, "len", 0, len);
 
@@ -268,7 +267,6 @@ struct k_response *r) { /* Response struct */
     }
 
     /* Parse the packet */
-
     if (k->what == W_RECV) { /* If we're sending ACKs */
         switch (k->cancel) { /* Get cancellation code if any */
         case 0:
@@ -516,7 +514,6 @@ struct k_response *r) { /* Response struct */
 #endif /* RECVONLY */
 
     /* Now we have an incoming packet with the expected sequence number. */
-
     debug(DB_CHR, "Packet OK", 0, t);
     debug(DB_LOG, "State", 0, k->state);
 
@@ -749,7 +746,6 @@ struct k_response *r) { /* Response struct */
 }
 
 /* Utility routines */
-
 unsigned char *
 getrslot(struct k_data *k, short *n) { /* Find a free packet buffer */
     register int i;
@@ -807,17 +803,16 @@ getsslot(struct k_data *k, short *n) { /* Find a free packet buffer */
 #endif /* COMMENT */
 }
 
-void /* Initialize a window slot */
-freesslot(struct k_data * k, short n) {
-    k->opktinfo[n].len = 0; /* Packet length */
-    k->opktinfo[n].seq = 0; /* Sequence number */
+/* Initialize a window slot */
+void freesslot(struct k_data * k, short n) {
+    k->opktinfo[n].len = 0;        /* Packet length */
+    k->opktinfo[n].seq = 0;        /* Sequence number */
     k->opktinfo[n].typ = (char) 0; /* Type */
-    k->opktinfo[n].rtr = 0; /* Retry count */
-    k->opktinfo[n].flg = 0; /* Flags */
+    k->opktinfo[n].rtr = 0;        /* Retry count */
+    k->opktinfo[n].flg = 0;        /* Flags */
 }
 
 /*  C H K 1  --  Compute a type-1 Kermit 6-bit checksum.  */
-
 static int chk1(unsigned char *pkt, struct k_data * k) {
     register unsigned int chk;
     chk = chk2(pkt, k);
@@ -826,7 +821,6 @@ static int chk1(unsigned char *pkt, struct k_data * k) {
 }
 
 /*  C H K 2  --  Numeric sum of all the bytes in the packet, 12 bits.  */
-
 static unsigned short chk2(unsigned char *pkt, struct k_data * k) {
     register unsigned short chk;
     for (chk = 0; *pkt != '\0'; pkt++)
@@ -864,7 +858,6 @@ static unsigned short chk3(unsigned char *pkt, struct k_data * k) {
  X_ERROR on i/o error
  */
 static int spkt(char typ, short seq, int len, unsigned char * data, struct k_data * k) {
-
     unsigned int crc; /* For building CRC */
     int i, j, lenpos; /* Workers */
     unsigned char * s, *buf;
@@ -982,7 +975,6 @@ static int nak(struct k_data * k, short seq, short slot) {
 }
 
 /*  A C K  --  Send an ACK (positive acknowledgement)  */
-
 static int ack(struct k_data * k, short seq, unsigned char * text) {
     int len, rc;
     len = 0;
@@ -1000,10 +992,8 @@ static int ack(struct k_data * k, short seq, unsigned char * text) {
 }
 
 /*  S P A R  --  Set parameters requested by other Kermit  */
-
 static void spar(struct k_data * k, unsigned char *s, int datalen) {
     int x, y;
-    //unsigned char c;
 
     s--; /* Line up with field numbers. */
 
@@ -1014,7 +1004,6 @@ static void spar(struct k_data * k, unsigned char *s, int datalen) {
         k->r_timo = xunchar(s[2]);
 
     /* No padding */
-
     if (datalen >= 5) /* Outbound Packet Terminator */
         k->s_eom = xunchar(s[5]);
 
@@ -1078,7 +1067,6 @@ static void spar(struct k_data * k, unsigned char *s, int datalen) {
         k->capas &= ~CAP_LS;
 
         /* In case other Kermit sends addt'l capas fields ... */
-
         for (y = 10; (xunchar(s[y]) & 1) && (datalen >= y); y++)
             ;
     }
@@ -1112,7 +1100,6 @@ static void spar(struct k_data * k, unsigned char *s, int datalen) {
 }
 
 /*  R P A R  --  Send my parameters to other Kermit  */
-
 static int rpar(struct k_data * k, char type) {
     unsigned char *d;
     int rc, len;
@@ -1120,13 +1107,13 @@ static int rpar(struct k_data * k, char type) {
     short b;
 #endif /* F_CRC */
 
-    d = k->ack_s; /* Where to put it */
-    d[0] = tochar(94); /* Maximum short-packet length */
-    d[1] = tochar(k->s_timo); /* When I want to be timed out */
-    d[2] = tochar(0); /* How much padding I need */
-    d[3] = ctl(0); /* Padding character I want */
-    d[4] = tochar(k->r_eom); /* End-of message character I want */
-    d[5] = k->s_ctlq; /* Control prefix I send */
+    d     = k->ack_s;          /* Where to put it */
+    d[0]  = tochar(94);        /* Maximum short-packet length */
+    d[1]  = tochar(k->s_timo); /* When I want to be timed out */
+    d[2]  = tochar(0);         /* How much padding I need */
+    d[3]  = ctl(0);            /* Padding character I want */
+    d[4]  = tochar(k->r_eom);  /* End-of message character I want */
+    d[5]  = k->s_ctlq;         /* Control prefix I send */
     if ((k->ebq == 'Y') && (k->parity)) /* 8th-bit prefix */
         d[6] = k->ebq = '&'; /* I need to request it */
     else
@@ -1136,14 +1123,14 @@ static int rpar(struct k_data * k, char type) {
         d[7] = '5'; /* FORCE 3 */
     else
         d[7] = k->bct + '0'; /* Normal */
-    d[8] = k->rptq; /* Repeat prefix */
-    d[9] = tochar(k->capas); /* Capability bits */
+    d[8]  = k->rptq;           /* Repeat prefix */
+    d[9]  = tochar(k->capas);  /* Capability bits */
     d[10] = tochar(k->window); /* Window size */
 
 #ifdef F_LP
     d[11] = tochar(k->r_maxlen / 95); /* Long packet size, big part */
     d[12] = tochar(k->r_maxlen % 95); /* Long packet size, little part */
-    d[13] = '\0'; /* Terminate the init string */
+    d[13] = '\0';                     /* Terminate the init string */
     len = 13;
 #else
     d[11] = '\0';
@@ -1188,33 +1175,32 @@ static int rpar(struct k_data * k, char type) {
  X_ERROR if output function fails
  */
 static int decode(struct k_data * k, struct k_response * r, short f, unsigned char *inbuf) {
-
     register unsigned int a, a7; /* Current character */
-    unsigned int b8; /* 8th bit */
-    int rpt; /* Repeat count */
-    int rc; /* Return code */
+    unsigned int b8;             /* 8th bit */
+    int rpt;                     /* Repeat count */
+    int rc;                      /* Return code */
     unsigned char *p;
 
     rc = X_OK;
-    rpt = 0; /* Initialize repeat count. */
+    rpt = 0;    /* Initialize repeat count. */
     if (f == 0) /* Output function... */
         p = r->filename;
 
     while ((a = *inbuf++ & 0xFF) != '\0') { /* Character loop */
-        if (k->rptflg && a == k->rptq) { /* Got a repeat prefix? */
+        if (k->rptflg && a == k->rptq) {    /* Got a repeat prefix? */
             rpt = xunchar(*inbuf++ & 0xFF); /* Yes, get the repeat count, */
-            a = *inbuf++ & 0xFF; /* and get the prefixed character. */
+            a = *inbuf++ & 0xFF;            /* and get the prefixed character. */
         }
         b8 = 0; /* 8th-bit value */
         if (k->parity && (a == k->ebq)) { /* Have 8th-bit prefix? */
-            b8 = 0200; /* Yes, flag the 8th bit */
-            a = *inbuf++ & 0x7F; /* and get the prefixed character. */
+            b8 = 0200;                    /* Yes, flag the 8th bit */
+            a = *inbuf++ & 0x7F;          /* and get the prefixed character. */
         }
-        if (a == k->r_ctlq) { /* If control prefix, */
+        if (a == k->r_ctlq) {    /* If control prefix, */
             a = *inbuf++ & 0xFF; /* get its operand */
-            a7 = a & 0x7F; /* and its low 7 bits. */
+            a7 = a & 0x7F;       /* and its low 7 bits. */
             if ((a7 >= 0100 && a7 <= 0137) || a7 == '?') /* Controllify */
-                a = ctl(a); /* if in control range. */
+                a = ctl(a);      /* if in control range. */
         }
         a |= b8; /* OR in the 8th bit */
 
@@ -1241,8 +1227,8 @@ static int decode(struct k_data * k, struct k_response * r, short f, unsigned ch
     return (rc);
 }
 
-static unsigned long /* Convert decimal string to number  */
-stringnum(unsigned char *s, struct k_data * k) {
+/* Convert decimal string to number  */
+static unsigned long stringnum(unsigned char *s, struct k_data * k) {
     long n;
     n = 0L;
     while (*s == SP)
@@ -1252,8 +1238,8 @@ stringnum(unsigned char *s, struct k_data * k) {
     return (n);
 }
 
-static unsigned char * /* Convert number to string */
-numstring(unsigned long n, unsigned char * buf, int buflen, struct k_data * k) {
+/* Convert number to string */
+static unsigned char* numstring(unsigned long n, unsigned char * buf, int buflen, struct k_data * k) {
     int i, x;
     buf[buflen - 1] = '\0';
     for (i = buflen - 2; i > 0; i--) {
@@ -1288,8 +1274,7 @@ numstring(unsigned long n, unsigned char * buf, int buflen, struct k_data * k) {
  1 if binary was announced.
  */
 
-#define SIZEBUFL 32                     /* For number conversions */
-
+#define SIZEBUFL 32 /* For number conversions */
 static int gattr(struct k_data * k, unsigned char * s, struct k_response * r) {
     long fsize, fsizek; /* File size */
     unsigned char c; /* Workers */
@@ -1353,7 +1338,6 @@ static int gattr(struct k_data * k, unsigned char * s, struct k_response * r) {
 }
 
 #define ATTRLEN 48
-
 static int sattr(struct k_data *k, struct k_response *r) { /* Build and send A packet */
     int i, x;
     short tmp;
@@ -1511,7 +1495,9 @@ static int getpkt(struct k_data *k, struct k_response *r) { /* Fill a packet fro
 }
 
 #ifndef RECVONLY
-static int sdata(struct k_data *k, struct k_response *r) { /* Send a data packet */
+
+/* Send a data packet */
+static int sdata(struct k_data *k, struct k_response *r) {
     int len, rc;
     if (k->cancel) { /* Interrupted */
         debug(DB_LOG, "sdata interrupted k->cancel", 0, (k->cancel));
@@ -1528,7 +1514,6 @@ static int sdata(struct k_data *k, struct k_response *r) { /* Send a data packet
 #endif /* RECVONLY */
 
 /*  E P K T  --  Send a (fatal) Error packet with the given message  */
-
 static void epkt(char * msg, struct k_data * k) {
     if (!(k->bctf)) { /* Unless FORCE 3 */
         k->bct = 1;
@@ -1536,8 +1521,8 @@ static void epkt(char * msg, struct k_data * k) {
     (void) spkt('E', 0, -1, (unsigned char *) msg, k);
 }
 
-static int /* Fill a packet from string s. */
-encstr(unsigned char * s, struct k_data * k, struct k_response *r) {
+/* Fill a packet from string s. */
+static int encstr(unsigned char * s, struct k_data * k, struct k_response *r) {
     k->s_first = 1; /* Start lookahead. */
     k->istring = s; /* Set input string pointer */
     getpkt(k, r); /* Fill a packet */
@@ -1555,7 +1540,8 @@ static void decstr(unsigned char * s, struct k_data * k, struct k_response * r) 
 }
 */
 
-static void encode(int a, int next, struct k_data * k) { /* Encode character into packet */
+/* Encode character into packet */
+static void encode(int a, int next, struct k_data * k) {
     int a7, b8, maxlen;
 
     maxlen = k->s_maxlen - 4;
@@ -1603,7 +1589,8 @@ static void encode(int a, int next, struct k_data * k) { /* Encode character int
     k->xdata[(k->size)] = '\0'; /* Terminate string with null. */
 }
 
-static int nxtpkt(struct k_data * k) { /* Get next packet to send */
+/* Get next packet to send */
+static int nxtpkt(struct k_data * k) {
     k->s_seq = (k->s_seq + 1) & 63; /* Next sequence number */
     k->xdata = k->xdatabuf;
     return (0);

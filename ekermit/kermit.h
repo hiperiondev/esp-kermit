@@ -43,8 +43,8 @@
  POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef COMMENT                          /* COMMENT must not be defined */
-#undef COMMENT                /* (e.g. in a platform header file) */
+#ifdef COMMENT               /* COMMENT must not be defined */
+#undef COMMENT               /* (e.g. in a platform header file) */
 #endif /* COMMENT */
 
 /*
@@ -62,10 +62,10 @@
 /* XAC compiler for Philips XAG30 microprocessor */
 /* See http://www.columbia.edu/kermit/em-apex.html */
 
-#ifdef XAC                /* XAC has tiny command line */
-#define NO_LP                /* Long packets too big for APF9 */
+#ifdef XAC                  /* XAC has tiny command line */
+#define NO_LP               /* Long packets too big for APF9 */
 #define NO_SSW
-#define NO_SCAN                /* No file system */
+#define NO_SCAN             /* No file system */
 #define FN_MAX  16
 #define IBUFLEN 128 
 #define OBUFLEN 512
@@ -84,26 +84,26 @@
 #endif    /* XAC */
 
 #ifndef NO_LP
-#define F_LP                            /* Long packets */
+#define F_LP                /* Long packets */
 #endif    /* NO_LP */
 
 #ifndef NO_AT
-#define F_AT                            /* Attribute packets */
+#define F_AT                /* Attribute packets */
 #endif    /* NO_AT */
 
 #ifndef NO_CTRLC
-#define F_CTRLC                         /* 3 consecutive Ctrl-C's to quit */
+#define F_CTRLC             /* 3 consecutive Ctrl-C's to quit */
 #endif    /* NO_CTRLC */
 
 #ifndef NO_SSW
-#define F_SSW                /* Simulated sliding windows */
+#define F_SSW               /* Simulated sliding windows */
 #endif    /* NO_SSW */
 
 #ifndef NO_SCAN
-#define F_SCAN                /* Scan files for text/binary */
+#define F_SCAN              /* Scan files for text/binary */
 #endif    /* NO_SCAN */
 
-#ifndef NO_CRC                /* Type 2 and 3 block checks */
+#ifndef NO_CRC              /* Type 2 and 3 block checks */
 #define F_CRC
 #endif /* NO_CRC */
 
@@ -113,16 +113,15 @@
  works just fine except that error recovery is via go-back-to-n rather than
  selective repeat.
  */
-
-#ifdef COMMENT                          /* None of the following ... */
+#ifdef COMMENT              /* None of the following ... */
 /*
   + = It works if selected
   - = Partially implemented but doesn't work
   0 = Not implemented
 */
-  #define F_TSW                         /* - True sliding windows */
-  #define F_LS                          /* 0 Locking shifts */
-  #define F_RS                          /* 0 Recovery */
+  #define F_TSW             /* - True sliding windows */
+  #define F_LS              /* 0 Locking shifts */
+  #define F_RS              /* 0 Recovery */
 
 #endif /* COMMENT */
 
@@ -139,59 +138,55 @@
 #endif /* F_SSW */
 
 /* Control character symbols */
+#define NUL  '\0'           /* Null */
+#define SOH  001            /* Start of header */
+#define LF   012            /* Linefeed */
+#define CR   015            /* Carriage Return */
+#define SO   016            /* Shift Out */
+#define SI   017            /* Shift In */
+#define DLE  020            /* Datalink Escape */
+#define ESC  033            /* Escape */
+#define XON  021            /* XON */
+#define XOFF 023            /* XOFF */
+#define SP   040            /* Space */
+#define DEL  0177           /* Delete (Rubout) */
 
-#define NUL  '\0'                       /* Null */
-#define SOH  001                        /* Start of header */
-#define LF   012                        /* Linefeed */
-#define CR   015                        /* Carriage Return */
-#define SO   016                        /* Shift Out */
-#define SI   017                        /* Shift In */
-#define DLE  020                        /* Datalink Escape */
-#define ESC  033                        /* Escape */
-#define XON  021                        /* XON */
-#define XOFF 023                        /* XOFF */
-#define SP   040                        /* Space */
-#define DEL  0177                       /* Delete (Rubout) */
-
-#ifndef HAVE_VERSION            /* k_data struct has version member */
-#define HAVE_VERSION            /* as of version 1.1 */
+#ifndef HAVE_VERSION        /* k_data struct has version member */
+#define HAVE_VERSION        /* as of version 1.1 */
 #endif /* HAVE_VERSION */
 
 /* Main program return codes */
-
 #define SUCCESS     0
 #define FAILURE     1
 
 /* Buffer lengths (can be overridden in platform.h) */
-
 #ifndef RECVONLY
 #ifndef IBUFLEN
-#define IBUFLEN  1024 /* File input buffer size */
+#define IBUFLEN  1024       /* File input buffer size */
 #endif /* IBUFLEN */
 #endif    /* RECVONLY */
 
 #ifndef OBUFLEN
-#define OBUFLEN  1024 /* File output buffer size */
+#define OBUFLEN  1024       /* File output buffer size */
 #endif /* OBUFLEN */
 
-#ifndef IDATALEN      /* S/I packet data max length */
+#ifndef IDATALEN            /* S/I packet data max length */
 #define IDATALEN 32 
 #endif /* IDATALEN */
 
 #ifndef FN_MAX
-#define FN_MAX   1024  /* Maximum filename length */
+#define FN_MAX   1024       /* Maximum filename length */
 #endif /* FN_MAX */
 
-#define DATE_MAX   20  /* Max length for file date */
+#define DATE_MAX   20       /* Max length for file date */
 
 /* Protocol parameters */
-
 #ifndef P_WSLOTS
-#ifdef F_SW                             /* Window slots */
+#ifdef F_SW                 /* Window slots */
 #ifdef F_TSW                /* True window slots */
-#define P_WSLOTS    4            /* Max is 4 */
+#define P_WSLOTS    4       /* Max is 4 */
 #else
-#define P_WSLOTS   31            /* Simulated max is 31 */
+#define P_WSLOTS   31       /* Simulated max is 31 */
 #endif /* F_TSW */
 #else
 #define P_WSLOTS    1
@@ -207,17 +202,14 @@
 #endif /* P_PKTLEN */
 
 /* Generic On/Off values */
-
 #define OFF         0
 #define ON          1
 
 /* File Transfer Modes */
-
 #define BINARY      0
 #define TEXT        1
 
 /* Parity values */
-
 #define PAR_NONE    0
 #define PAR_SPACE   1
 #define PAR_EVEN    2
@@ -225,183 +217,176 @@
 #define PAR_MARK    4
 
 /* Protocol parameters */
-
-#define P_S_TIMO   40                   /* Timeout to tell other Kermit  */
-#define P_R_TIMO    5                   /* Default timeout for me to use */
-#define P_RETRY    10                   /* Per-packet retramsit limit    */
-#define P_PARITY  PAR_NONE              /* Default parity        */
-#define P_R_SOH   SOH                   /* Incoming packet start */
-#define P_S_SOH   SOH                   /* Outbound packet start */
-#define P_R_EOM    CR                   /* Incoming packet end   */
-#define P_S_EOM    CR                   /* Outbound packet end   */
+#define P_S_TIMO   40      /* Timeout to tell other Kermit  */
+#define P_R_TIMO    5      /* Default timeout for me to use */
+#define P_RETRY    10      /* Per-packet retramsit limit    */
+#define P_PARITY  PAR_NONE /* Default parity        */
+#define P_R_SOH   SOH      /* Incoming packet start */
+#define P_S_SOH   SOH      /* Outbound packet start */
+#define P_R_EOM    CR      /* Incoming packet end   */
+#define P_S_EOM    CR      /* Outbound packet end   */
 
 /* Capability bits */
-
-#define CAP_LP      2                   /* Long packet capability */
-#define CAP_SW      4                   /* Sliding windows capability */
-#define CAP_AT      8                   /* Attribute packet capability */
-#define CAP_RS     16                   /* Resend capability */
-#define CAP_LS     32                   /* Locking shift capability */
+#define CAP_LP      2      /* Long packet capability */
+#define CAP_SW      4      /* Sliding windows capability */
+#define CAP_AT      8      /* Attribute packet capability */
+#define CAP_RS     16      /* Resend capability */
+#define CAP_LS     32      /* Locking shift capability */
 
 /* Actions */
-
-#define A_SEND      1            /* Send file(s) */
-#define A_RECV      2            /* Receive file(s) */
+#define A_SEND      1      /* Send file(s) */
+#define A_RECV      2      /* Receive file(s) */
 
 /* Receive protocol states */
-
-#define R_ERROR    -1                   /* Fatal protocol error */
-#define R_NONE      0                   /* Protocol not running */
-#define R_WAIT      1                   /* Waiting for S packet */
-#define R_FILE      2                   /* Waiting for F or B packet */
-#define R_ATTR      3                   /* Waiting for A or D packet */
-#define R_DATA      4                   /* Waiting for D or Z packet */
+#define R_ERROR    -1      /* Fatal protocol error */
+#define R_NONE      0      /* Protocol not running */
+#define R_WAIT      1      /* Waiting for S packet */
+#define R_FILE      2      /* Waiting for F or B packet */
+#define R_ATTR      3      /* Waiting for A or D packet */
+#define R_DATA      4      /* Waiting for D or Z packet */
 
 /* Send protocol states */
-
-#define S_ERROR    -1                   /* Fatal protocol error */
-#define S_NONE     10                   /* Protocol not running */
-#define S_INIT     11                   /* Sent S packet */
-#define S_FILE     12                   /* Sent F packet */
-#define S_ATTR     13                   /* Sent A packet */
-#define S_DATA     14                   /* Sent D packet */
-#define S_EOF      15                   /* Sent Z packet */
-#define S_EOT      16                   /* Sent B packet */
+#define S_ERROR    -1      /* Fatal protocol error */
+#define S_NONE     10      /* Protocol not running */
+#define S_INIT     11      /* Sent S packet */
+#define S_FILE     12      /* Sent F packet */
+#define S_ATTR     13      /* Sent A packet */
+#define S_DATA     14      /* Sent D packet */
+#define S_EOF      15      /* Sent Z packet */
+#define S_EOT      16      /* Sent B packet */
 
 /* What I'm Doing */
-
 #define W_NOTHING   0
 #define W_SEND      1
 #define W_RECV      2
 
 /* Kermit module function codes */
-
-#define K_INIT      0                   /* Initialize */
-#define K_RUN       1                   /* Run */
-#define K_STATUS    2                   /* Request status */
-#define K_CONTINUE  3                   /* Keep going */
-#define K_QUIT      4                   /* Quit immediately */
-#define K_ERROR     5                   /* Quit with error packet, msg given */
-#define K_SEND      6                    /* Begin Send sequence */
+#define K_INIT      0      /* Initialize */
+#define K_RUN       1      /* Run */
+#define K_STATUS    2      /* Request status */
+#define K_CONTINUE  3      /* Keep going */
+#define K_QUIT      4      /* Quit immediately */
+#define K_ERROR     5      /* Quit with error packet, msg given */
+#define K_SEND      6      /* Begin Send sequence */
 
 /* Kermit module return codes */
-
-#define X_ERROR    -1                   /* Fatal error */
-#define X_OK        0                   /* OK, no action needed */
-#define X_FILE      1                   /* Filename received */
-#define X_DATA      2                   /* File data received */
-#define X_DONE      3                   /* Done */
-#define X_STATUS    4                   /* Status report */
+#define X_ERROR    -1      /* Fatal error */
+#define X_OK        0      /* OK, no action needed */
+#define X_FILE      1      /* Filename received */
+#define X_DATA      2      /* File data received */
+#define X_DONE      3      /* Done */
+#define X_STATUS    4      /* Status report */
 
 /* Interruption codes */
-
-#define I_FILE      1            /* Cancel file */
-#define I_GROUP     2            /* Cancel group */
+#define I_FILE      1      /* Cancel file */
+#define I_GROUP     2      /* Cancel group */
 
 struct packet {
-    int len;   /* Length */
-    short seq; /* Sequence number */
-    char typ;  /* Type */
-    short rtr; /* Retry count */
-    unsigned char * dat; /* Pointer to data */
-    short flg; /* Flags */
+           int len;        /* Length */
+         short seq;        /* Sequence number */
+          char typ;        /* Type */
+         short rtr;        /* Retry count */
+unsigned char* dat;        /* Pointer to data */
+         short flg;        /* Flags */
 };
 
-struct k_data { /* The Kermit data structure */
-    unsigned char * version; /* Version number of Kermit module */
-    short remote;   /* 0 = local, 1 = remote */
-    short xfermode; /* 0 = automatic, 1 = manual */
-    short binary;   /* 0 = text, 1 = binary */
-    short state;    /* Kermit protocol state */
-    short what;     /* Action (send or receive) */
-    short s_first;  /* Enocode at beginning of file */
-    short s_next;   /* Encode lookahead byte */
-    short s_seq;    /* Sequence number sent */
-    short r_seq;    /* Sequence number received */
-    short s_type;   /* Packet type sent */
-    short r_type;   /* Packet type received */
-    short s_soh;    /* Packet start sent */
-    short r_soh;    /* Packet start received */
-    short s_eom;    /* Packet end sent */
-    short r_eom;    /* Packet end received */
-    int size;       /* Current size of output pkt data */
-    int osize;      /* Previous output packet data size */
-    int r_timo;     /* Receive and send timers */
-    int s_timo;     /* ... */
-    int r_maxlen;   /* maximum packet length to receive */
-    int s_maxlen;   /* maximum packet length to send */
-    short window;   /* maximum window slots */
-    short wslots;   /* current window slots */
-    short parity;   /* 0 = none, nonzero = some */
-    short retry;    /* retry limit */
-    short cancel;   /* Cancellation */
-    short ikeep;    /* Keep incompletely received files */
-    char s_ctlq;    /* control-prefix out */
-    char r_ctlq;    /* control-prefix in */
-    char ebq;       /* 8-bit prefix */
-    char ebqflg;    /* 8-bit prefixing negotiated */
-    char rptq;      /* Repeat-count prefix */
-    int s_rpt;      /* Current repeat count */
-    short rptflg;   /* flag for repeat counts negotiated */
-    short bct;      /* Block-check type 1..3 */
-    unsigned short capas; /* Capability bits */
+/* The Kermit data structure */
+struct k_data {
+unsigned char* version;  /* Version number of Kermit module */
+         short remote;   /* 0 = local, 1 = remote */
+         short xfermode; /* 0 = automatic, 1 = manual */
+         short binary;   /* 0 = text, 1 = binary */
+         short state;    /* Kermit protocol state */
+         short what;     /* Action (send or receive) */
+         short s_first;  /* Enocode at beginning of file */
+         short s_next;   /* Encode lookahead byte */
+         short s_seq;    /* Sequence number sent */
+         short r_seq;    /* Sequence number received */
+         short s_type;   /* Packet type sent */
+         short r_type;   /* Packet type received */
+         short s_soh;    /* Packet start sent */
+         short r_soh;    /* Packet start received */
+         short s_eom;    /* Packet end sent */
+         short r_eom;    /* Packet end received */
+           int size;     /* Current size of output pkt data */
+           int osize;    /* Previous output packet data size */
+           int r_timo;   /* Receive and send timers */
+           int s_timo;   /* ... */
+           int r_maxlen; /* maximum packet length to receive */
+           int s_maxlen; /* maximum packet length to send */
+         short window;   /* maximum window slots */
+         short wslots;   /* current window slots */
+         short parity;   /* 0 = none, nonzero = some */
+         short retry;    /* retry limit */
+         short cancel;   /* Cancellation */
+         short ikeep;    /* Keep incompletely received files */
+          char s_ctlq;   /* control-prefix out */
+          char r_ctlq;   /* control-prefix in */
+          char ebq;      /* 8-bit prefix */
+          char ebqflg;   /* 8-bit prefixing negotiated */
+          char rptq;     /* Repeat-count prefix */
+           int s_rpt;    /* Current repeat count */
+          short rptflg;  /* flag for repeat counts negotiated */
+          short bct;     /* Block-check type 1..3 */
+ unsigned short capas;   /* Capability bits */
 #ifdef F_CRC
-    unsigned short crcta[16]; /* CRC generation table A */
-    unsigned short crctb[16]; /* CRC generation table B */
+ unsigned short crcta[16]; /* CRC generation table A */
+ unsigned short crctb[16]; /* CRC generation table B */
 #endif /* F_CRC */
-    unsigned char s_remain[6]; /* Send data leftovers */
-    unsigned char ipktbuf[P_PKTLEN + 8][P_WSLOTS]; /* Buffers for incoming packets */
-    struct packet ipktinfo[P_WSLOTS]; /* Incoming packet info */
+  unsigned char s_remain[6];                     /* Send data leftovers */
+  unsigned char ipktbuf[P_PKTLEN + 8][P_WSLOTS]; /* Buffers for incoming packets */
+  struct packet ipktinfo[P_WSLOTS];              /* Incoming packet info */
 #ifdef COMMENT
-    unsigned char opktbuf[P_PKTLEN+8][P_WSLOTS]; /* Buffers for outbound packets */
+  unsigned char opktbuf[P_PKTLEN+8][P_WSLOTS];   /* Buffers for outbound packets */
 #else
-    unsigned char opktbuf[P_PKTLEN + 8]; /* Outbound packet buffer */
-    int opktlen; /* Outbound packet length */
-    unsigned char xdatabuf[P_PKTLEN + 2]; /* Buffer for building data field */
+  unsigned char opktbuf[P_PKTLEN + 8];  /* Outbound packet buffer */
+            int opktlen;                /* Outbound packet length */
+  unsigned char xdatabuf[P_PKTLEN + 2]; /* Buffer for building data field */
 #endif /* COMMENT */
-    struct packet opktinfo[P_WSLOTS]; /* Outbound packet info */
-    unsigned char * xdata; /* Pointer to data field of outpkt */
+  struct packet opktinfo[P_WSLOTS];     /* Outbound packet info */
+ unsigned char* xdata;                  /* Pointer to data field of outpkt */
 #ifdef F_TSW
-    short r_pw[64];            /* Packet Seq.No. to window-slot map */
-    short s_pw[64];            /* Packet Seq.No. to window-slot map */
+          short r_pw[64];               /* Packet Seq.No. to window-slot map */
+          short s_pw[64];               /* Packet Seq.No. to window-slot map */
 #endif /* F_TSW */
-    unsigned char ack_s[IDATALEN]; /* Our own init parameter string */
-    unsigned char * obuf;
-    int rx_avail; /* Comms bytes available for reading */
-    int obuflen; /* Length of output file buffer */
-    int obufpos; /* Output file buffer position */
-    unsigned char ** filelist; /* List of files to send */
-    unsigned char * dir; /* Directory */
-    unsigned char * filename; /* Name of current file */
-    unsigned char * istring; /* Pointer to string to encode from */
-    unsigned char * ostring; /* Pointer to string to decode to */
-    int (*rxd)(struct k_data *, unsigned char *, int); /* Comms read function */
-    int (*txd)(struct k_data *, unsigned char *, int); /* and comms write function */
-    int (*ixd)(struct k_data *); /* and comms info function */
-    int (*openf)(struct k_data *, unsigned char *, int); /* open-file function  */
-    unsigned long (*finfo)(struct k_data *, unsigned char *, unsigned char *, int, short *, short);
-    int (*readf)(struct k_data *); /* read-file function  */
-    int (*writef)(struct k_data *, unsigned char *, int); /* write-file function */
-    int (*closef)(struct k_data *, unsigned char, int); /* close-file function */
-    int (*dbf)(int, unsigned char *, unsigned char *, long); /* debug function */
-    unsigned char * zinbuf; /* Input file buffer itself */
-    int zincnt; /* Input buffer position */
-    int zinlen; /* Length of input file buffer */
-    unsigned char * zinptr; /* Pointer to input file buffer */
-    int bctf; /* Flag to force type 3 block check */
-    int dummy;
+  unsigned char ack_s[IDATALEN];        /* Our own init parameter string */
+ unsigned char* obuf;
+            int rx_avail; /* Comms bytes available for reading */
+            int obuflen;  /* Length of output file buffer */
+            int obufpos;  /* Output file buffer position */
+unsigned char** filelist; /* List of files to send */
+ unsigned char* dir;      /* Directory */
+ unsigned char* filename; /* Name of current file */
+ unsigned char* istring;  /* Pointer to string to encode from */
+ unsigned char* ostring;  /* Pointer to string to decode to */
+ unsigned char* zinbuf;   /* Input file buffer itself */
+            int zincnt;   /* Input buffer position */
+            int zinlen;   /* Length of input file buffer */
+ unsigned char* zinptr;   /* Pointer to input file buffer */
+            int bctf;     /* Flag to force type 3 block check */
+            int dummy;
+
+          int (*rxd)   (struct k_data *, unsigned char *, int);       /* Comms read function */
+          int (*txd)   (struct k_data *, unsigned char *, int);       /* and comms write function */
+          int (*ixd)   (struct k_data *);                             /* and comms info function */
+          int (*openf) (struct k_data *, unsigned char *, int);       /* open-file function  */
+unsigned long (*finfo) (struct k_data *, unsigned char *,unsigned char *, int, short *, short);
+          int (*readf) (struct k_data *);                             /* read-file function  */
+          int (*writef)(struct k_data *, unsigned char *, int);       /* write-file function */
+          int (*closef)(struct k_data *, unsigned char, int);         /* close-file function */
+          int (*dbf)   (int, unsigned char *, unsigned char *, long); /* debug function */
 };
 
-struct k_response { /* Report from Kermit */
-    short status; /* Current status */
-    unsigned char filename[FN_MAX];   /* Name of current file */
-    unsigned char filedate[DATE_MAX]; /* Date of file */
-    long filesize; /* Size of file */
-    long sofar;    /* Bytes transferred so far */
+/* Report from Kermit */
+struct k_response {
+        short status;             /* Current status */
+unsigned char filename[FN_MAX];   /* Name of current file */
+unsigned char filedate[DATE_MAX]; /* Date of file */
+         long filesize;           /* Size of file */
+         long sofar;              /* Bytes transferred so far */
 };
 
 /* Macro definitions */
-
 #define tochar(ch)  (unsigned char)((unsigned char)((unsigned char)(ch) + SP ))
 #define xunchar(ch) (unsigned char)((unsigned char)((unsigned char)(ch) - SP ))
 #define ctl(ch)     (unsigned char)((unsigned char)((unsigned char)(ch) ^ 64 ))
@@ -413,11 +398,10 @@ struct k_response { /* Report from Kermit */
 #endif /* COMMENT */
 
 /* Prototypes for kermit() functions */
-
-int kermit(short, struct k_data *, short, int, char *, struct k_response *);
-unsigned char * getrslot(struct k_data *, short *);
-unsigned char * getsslot(struct k_data *, short *);
-void freerslot(struct k_data *, short);
-void freesslot(struct k_data *, short);
+           int kermit   (short, struct k_data *, short, int, char *, struct k_response *);
+unsigned char* getrslot (struct k_data *, short *);
+unsigned char* getsslot (struct k_data *, short *);
+          void freerslot(struct k_data *, short);
+          void freesslot(struct k_data *, short);
 
 #endif /* __KERMIT_H__ */
